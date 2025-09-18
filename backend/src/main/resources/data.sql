@@ -27,3 +27,9 @@ INSERT INTO products (id, sku, title, description, category_id, attributes_json,
     (2, 'SKU-002', 'Ultrabook 14"', 'Lightweight laptop for professionals', 3, JSON_OBJECT('ram', '16GB', 'storage', '512GB SSD'), 1, NOW()),
     (3, 'SKU-003', 'Men Denim Jacket', 'Stylish denim jacket for men', 5, JSON_OBJECT('size', 'L', 'color', 'blue'), 1, NOW())
 ON DUPLICATE KEY UPDATE title = VALUES(title), description = VALUES(description);
+
+INSERT INTO coupons (id, code, discount_type, discount_value, user_id, product_id, valid_from, valid_to, redeemed, created_at) VALUES
+    (1, 'WELCOME10', 'PERCENTAGE', 10.00, 2, 1, NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), FALSE, NOW())
+ON DUPLICATE KEY UPDATE code = VALUES(code), discount_type = VALUES(discount_type), discount_value = VALUES(discount_value),
+    user_id = VALUES(user_id), product_id = VALUES(product_id), valid_from = VALUES(valid_from), valid_to = VALUES(valid_to),
+    redeemed = VALUES(redeemed);

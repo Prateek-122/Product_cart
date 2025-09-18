@@ -10,5 +10,7 @@ public interface OrderService {
     List<Order> findAll();
     Optional<Order> findById(Long id);
     List<Order> findByUserId(Long userId);
+    List<Order> findByUserEmail(String email);
+    List<Order> findByUserPhoneHash(String phoneHash);
     void delete(Long id);
 }

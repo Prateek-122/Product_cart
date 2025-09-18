@@ -36,6 +36,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<Order> findByUserEmail(String email) {
+        return orderRepository.findByUserEmailIgnoreCase(email);
+    }
+
+    @Override
+    public List<Order> findByUserPhoneHash(String phoneHash) {
+        return orderRepository.findByUserPhoneHash(phoneHash);
+    }
+
+    @Override
     public void delete(Long id) {
         orderRepository.deleteById(id);
     }

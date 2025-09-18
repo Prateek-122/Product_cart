@@ -86,3 +86,18 @@ CREATE TABLE IF NOT EXISTS promotions (
     valid_from TIMESTAMP,
     valid_to TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS coupons (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    code VARCHAR(100) NOT NULL UNIQUE,
+    discount_type VARCHAR(50) NOT NULL,
+    discount_value DECIMAL(12,2) NOT NULL,
+    user_id BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    valid_from TIMESTAMP NULL,
+    valid_to TIMESTAMP NULL,
+    redeemed BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_coupons_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_coupons_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);

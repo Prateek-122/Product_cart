@@ -7,6 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import prateek.dto.OrderRequest;
 import prateek.dto.OrderStatusUpdateRequest;
@@ -15,7 +17,11 @@ import prateek.entity.User;
 import prateek.service.OrderService;
 import prateek.service.UserService;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -38,6 +44,26 @@ public class OrderController {
         User user = userService.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         return ResponseEntity.ok(orderService.findByUserId(user.getId()));
+    }
+
+    @GetMapping("/lookup")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Order>> lookupByContact(@RequestParam(required = false) String email,
+                                                       @RequestParam(value = "whatsapp", required = false) String whatsappNumber) {
+        if (!StringUtils.hasText(email) && !StringUtils.hasText(whatsappNumber)) {
+            return ResponseEntity.badRequest().build();
+        }
+        Map<Long, Order> results = new LinkedHashMap<>();
+        if (StringUtils.hasText(email)) {
+            orderService.findByUserEmail(email)
+                    .forEach(order -> results.put(order.getId(), order));
+        }
+        if (StringUtils.hasText(whatsappNumber)) {
+            String phoneHash = DigestUtils.md5DigestAsHex(whatsappNumber.getBytes(StandardCharsets.UTF_8));
+            orderService.findByUserPhoneHash(phoneHash)
+                    .forEach(order -> results.put(order.getId(), order));
+        }
+        return ResponseEntity.ok(new ArrayList<>(results.values()));
     }
 
     @GetMapping("/{id}")

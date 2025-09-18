@@ -39,6 +39,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> findByPhoneHash(String phoneHash) {
+        return userRepository.findByPhoneHash(phoneHash);
+    }
+
+    @Override
     public void delete(Long id) {
         userRepository.deleteById(id);
     }
