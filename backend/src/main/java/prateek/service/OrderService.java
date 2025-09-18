@@ -1,0 +1,14 @@
+package prateek.service;
+
+import prateek.entity.Order;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface OrderService {
+    Order save(Order order);
+    List<Order> findAll();
+    Optional<Order> findById(Long id);
+    List<Order> findByUserId(Long userId);
+    void delete(Long id);
+}
